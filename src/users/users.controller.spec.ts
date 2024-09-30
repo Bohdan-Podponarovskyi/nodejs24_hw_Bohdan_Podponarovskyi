@@ -52,7 +52,7 @@ describe('UsersController', () => {
       const userId = 1;
       jest.spyOn(service, 'findOne').mockReturnValue(`This action returns a #${userId} user`);
 
-      expect(controller.findOne(userId.toString())).toEqual(`This action returns a #${userId} user`);
+      expect(controller.findOne(userId)).toEqual(`This action returns a #${userId} user`);
       expect(service.findOne).toHaveBeenCalledWith(userId);
     });
   });
@@ -68,7 +68,7 @@ describe('UsersController', () => {
       };
       jest.spyOn(service, 'updateFull').mockReturnValue(`This action updates a #${userId} user`);
 
-      expect(controller.updateFull(userId.toString(), updateFullUserDto)).toEqual(`This action updates a #${userId} user`);
+      expect(controller.updateFull(userId, updateFullUserDto)).toEqual(`This action updates a #${userId} user`);
       expect(service.updateFull).toHaveBeenCalledWith(userId, updateFullUserDto);
     });
   });
@@ -81,7 +81,7 @@ describe('UsersController', () => {
       };
       jest.spyOn(service, 'updatePart').mockReturnValue(`This action updates a #${userId} user partially`);
 
-      expect(controller.updatePart(userId.toString(), updatePartUserDto)).toEqual(`This action updates a #${userId} user partially`);
+      expect(controller.updatePart(userId, updatePartUserDto)).toEqual(`This action updates a #${userId} user partially`);
       expect(service.updatePart).toHaveBeenCalledWith(userId, updatePartUserDto);
     });
   });
@@ -91,7 +91,7 @@ describe('UsersController', () => {
       const userId = 1;
       jest.spyOn(service, 'remove').mockReturnValue(`This action removes a #${userId} user`);
 
-      expect(controller.remove(userId.toString())).toEqual(`This action removes a #${userId} user`);
+      expect(controller.remove(userId)).toEqual(`This action removes a #${userId} user`);
       expect(service.remove).toHaveBeenCalledWith(userId);
     });
   });
