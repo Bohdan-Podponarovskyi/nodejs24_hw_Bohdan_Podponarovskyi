@@ -1,16 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdatePartUserDto } from './dto/update-part-user.dto';
-import { UpdateFullUserDto } from './dto/update-full-user.dto';
+import { CreateUserInputDto } from './dto/create-user-input.dto';
+import { UpdatePartUserInputDto } from './dto/update-part-user-input.dto';
+import { UpdateFullUserInputDto } from './dto/update-full-user-input.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserInputDto: CreateUserInputDto) {
+    return this.usersService.create(createUserInputDto);
   }
 
   @Get()
@@ -24,13 +24,13 @@ export class UsersController {
   }
 
   @Put(':id')
-  updateFull(@Param('id', ParseIntPipe) id: number, @Body() updateFullUserDto: UpdateFullUserDto) {
-    return this.usersService.updateFull(id, updateFullUserDto);
+  updateFull(@Param('id', ParseIntPipe) id: number, @Body() updateFullUserInputDto: UpdateFullUserInputDto) {
+    return this.usersService.updateFull(id, updateFullUserInputDto);
   }
 
   @Patch(':id')
-  updatePart(@Param('id', ParseIntPipe) id: number, @Body() UpdatePartUserDto: UpdatePartUserDto) {
-    return this.usersService.updatePart(id, UpdatePartUserDto);
+  updatePart(@Param('id', ParseIntPipe) id: number, @Body() updatePartUserInputDto: UpdatePartUserInputDto) {
+    return this.usersService.updatePart(id, updatePartUserInputDto);
   }
 
   @Delete(':id')

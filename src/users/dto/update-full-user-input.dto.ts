@@ -1,7 +1,7 @@
 import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { IUpdateFullUserInput } from '../interfaces/update-full-user-input.interface';
 
-export class UpdateFullUserDto implements IUpdateFullUserInput {
+export class UpdateFullUserInputDto implements IUpdateFullUserInput {
   @IsString()
   firstName: string;
 

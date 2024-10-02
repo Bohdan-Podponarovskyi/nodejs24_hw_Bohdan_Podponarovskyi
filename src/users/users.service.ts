@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdatePartUserDto } from './dto/update-part-user.dto';
-import { UpdateFullUserDto } from './dto/update-full-user.dto';
+import { CreateUserInputDto } from './dto/create-user-input.dto';
+import { UpdatePartUserInputDto } from './dto/update-part-user-input.dto';
+import { UpdateFullUserInputDto } from './dto/update-full-user-input.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
+  create(createUserInputDto: CreateUserInputDto) {
     return 'This action adds a new user';
   }
 
@@ -17,11 +17,11 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  updateFull(id: number, updateFullUserDto: UpdateFullUserDto) {
+  updateFull(id: number, updateFullUserInputDto: UpdateFullUserInputDto) {
     return `This action updates a #${id} user`;
   }
 
-  updatePart(id: number, updatePartUserDto: UpdatePartUserDto) {
+  updatePart(id: number, updatePartUserInputDto: UpdatePartUserInputDto) {
     return `This action updates a #${id} user partially`;
   }
 

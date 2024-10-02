@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdatePartUserDto } from './dto/update-part-user.dto';
-import { UpdateFullUserDto } from './dto/update-full-user.dto';
+import { CreateUserInputDto } from './dto/create-user-input.dto';
+import { UpdatePartUserInputDto } from './dto/update-part-user-input.dto';
+import { UpdateFullUserInputDto } from './dto/update-full-user-input.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -21,11 +21,13 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should return a success message when creating a user', () => {
-      const createUserDto: CreateUserDto = {
+      const createUserDto: CreateUserInputDto = {
         firstName: 'John',
         lastName: 'Doe',
         age: 25,
         isStudent: false,
+        email: 'john.doe@example.com',
+        password: 'password123',
       };
       expect(service.create(createUserDto)).toEqual('This action adds a new user');
     });
@@ -47,11 +49,13 @@ describe('UsersService', () => {
   describe('updateFull', () => {
     it('should return a success message when updating a user', () => {
       const userId = 1;
-      const updateFullUserDto: UpdateFullUserDto = {
+      const updateFullUserDto: UpdateFullUserInputDto = {
         firstName: 'Jane',
         lastName: 'Doe',
         age: 30,
         isStudent: true,
+        email: 'jane.doe@example.com',
+        password: 'strongpassword123',
       };
       expect(service.updateFull(userId, updateFullUserDto)).toEqual(`This action updates a #${userId} user`);
     });
@@ -60,8 +64,14 @@ describe('UsersService', () => {
   describe('updatePart', () => {
     it('should return a success message when partially updating a user', () => {
       const userId = 1;
-      const updatePartUserDto: UpdatePartUserDto = {
+      const updatePartUserDto: UpdatePartUserInputDto = {
         firstName: 'Jane',
+        // Assuming other optional fields here for partial update, test purpose only
+        lastName: 'Doe',
+        age: 30,
+        isStudent: true,
+        email: 'jane.doe@example.com',
+        password: 'strongpassword123',
       };
       expect(service.updatePart(userId, updatePartUserDto)).toEqual(`This action updates a #${userId} user partially`);
     });

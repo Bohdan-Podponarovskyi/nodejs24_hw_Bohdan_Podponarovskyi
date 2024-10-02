@@ -1,7 +1,7 @@
 import { IUpdatePartUserInput } from '../interfaces/update-part-user-input.interface';
 import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
-export class UpdatePartUserDto implements IUpdatePartUserInput {
+export class UpdatePartUserInputDto implements IUpdatePartUserInput {
   @IsString()
   @IsOptional()
   firstName: string;
