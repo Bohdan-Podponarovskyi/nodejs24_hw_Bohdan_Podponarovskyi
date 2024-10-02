@@ -1,7 +1,7 @@
-import { IUser } from '../interfaces/user.interface';
-import { IsBoolean, IsNumber, IsString, Min } from 'class-validator';
+import { IsBoolean, IsEmail, IsNumber, IsString, Min } from 'class-validator';
+import { ICreateUserInput } from '../interfaces/create-user-input.interface';
 
-export class CreateUserDto implements IUser {
+export class CreateUserDto implements ICreateUserInput {
   @IsString()
   firstName: string;
 
@@ -14,4 +14,10 @@ export class CreateUserDto implements IUser {
 
   @IsBoolean()
   isStudent: boolean;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
 }

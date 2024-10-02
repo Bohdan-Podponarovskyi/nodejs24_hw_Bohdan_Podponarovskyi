@@ -1,7 +1,7 @@
-import { IUser } from '../interfaces/user.interface';
-import { IsBoolean, IsNumber, IsString, Min } from 'class-validator';
+import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IUpdateFullUserInput } from '../interfaces/update-full-user-input.interface';
 
-export class UpdateFullUserDto implements IUser {
+export class UpdateFullUserDto implements IUpdateFullUserInput {
   @IsString()
   firstName: string;
 
@@ -14,4 +14,12 @@ export class UpdateFullUserDto implements IUser {
 
   @IsBoolean()
   isStudent: boolean;
+
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @IsString()
+  @IsOptional()
+  password: string;
 }
