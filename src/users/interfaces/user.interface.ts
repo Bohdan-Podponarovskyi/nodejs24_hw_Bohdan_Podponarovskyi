@@ -1,6 +1,11 @@
-export interface IUser {
+export interface UserInterface {
+  id: number,
   firstName: string,
   lastName: string,
   age: number,
-  isStudent: boolean
+  isStudent: boolean,
+  email: string,
+  password: string,
+  accessToken?: string,
+  refreshToken?: string
 }
