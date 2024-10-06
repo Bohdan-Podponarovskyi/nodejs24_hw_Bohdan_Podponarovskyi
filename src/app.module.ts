@@ -5,9 +5,10 @@ import { AppRequestLoggerMiddleware } from './common/middlewares/app-request-log
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, ConfigModule.forRoot({})],
+  imports: [UsersModule, AuthModule, ConfigModule.forRoot({}), DatabaseModule],
   controllers: [AppController],
   providers: [AppService],
 })
