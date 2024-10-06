@@ -1,3 +1,3 @@
-import { IUser } from './user.interface';
+import { UserInterface } from './user.interface';
 
-export type ICreateUserInput = Required<Omit<IUser, 'id' | 'accessToken' | 'refreshToken'>>;
+export type CreateUserInputInterface = Required<Omit<UserInterface, 'id' | 'accessToken' | 'refreshToken'>>;
