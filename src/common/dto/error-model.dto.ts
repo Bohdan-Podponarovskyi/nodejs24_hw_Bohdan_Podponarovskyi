@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsString, IsDate, IsOptional } from 'class-validator';
 
-class MessageKeyErrorInterface {
+class MessageKeyErrorDto {
   @ApiProperty()
   @IsString()
   messageKey: string;
@@ -13,8 +13,8 @@ class MessageKeyErrorInterface {
 }
 
 export class ErrorModelDto {
-  @ApiProperty({ type: MessageKeyErrorInterface, isArray: true })
-  errors: MessageKeyErrorInterface[];
+  @ApiProperty({ type: MessageKeyErrorDto, isArray: true })
+  errors: MessageKeyErrorDto[];
 
   @ApiProperty()
   @IsNumber()
