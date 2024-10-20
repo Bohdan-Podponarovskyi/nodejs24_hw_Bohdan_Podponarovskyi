@@ -29,16 +29,42 @@ export class MongoDatabaseService extends DatabaseAbstractService {
     this.logger.log('Disconnected from MongoDB');
   }
 
-  async insertOne(table: MongooseModelsMapEnum, data: any): Promise<void> {
+  async insertOne(table: MongooseModelsMapEnum, data: any): Promise<any> {
     const model = this.getModel(table);
+
     const insertEntity = new model(data);
-    await insertEntity.save();
+
+    return await insertEntity.save();
   }
 
   async findOne(table: MongooseModelsMapEnum, query: any): Promise<any> {
     const model = this.getModel(table);
 
     return model.findOne(query).lean();
+  }
+
+  async findOneById(table: MongooseModelsMapEnum, id: string): Promise<any> {
+    const model = this.getModel(table);
+
+    return model.findById(id).lean();
+  }
+
+  async findAll(table: MongooseModelsMapEnum): Promise<any> {
+    const model = this.getModel(table);
+
+    return model.find().lean();
+  }
+
+  async findByIdAndUpdate(table: MongooseModelsMapEnum, id: string, data: any): Promise<any> {
+    const model = this.getModel(table);
+
+    return model.findByIdAndUpdate(id, data, { new: true }).lean();
+  }
+
+  async findByIdAndDelete(table: MongooseModelsMapEnum, id: string): Promise<any> {
+    const model = this.getModel(table);
+
+    return model.findByIdAndDelete(id).lean();
   }
 
   private getModel(table: MongooseModelsMapEnum): mongoose.Model<any> {

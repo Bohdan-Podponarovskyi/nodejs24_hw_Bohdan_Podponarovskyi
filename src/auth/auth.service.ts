@@ -23,7 +23,7 @@ export class AuthService {
 
     this.logger.log(`Signing in user: ${email}`);
 
-    const user = this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (!user) throw new BadRequestException('User does not exist');
 
@@ -31,9 +31,9 @@ export class AuthService {
 
     if (!isPasswordValid) throw new BadRequestException('Invalid password');
 
-    const tokens = await this.getTokens(user.id, email);
+    const tokens = await this.getTokens(user._id, email);
 
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    await this.updateRefreshToken(user._id, tokens.refreshToken);
 
     return tokens;
   }
@@ -43,13 +43,15 @@ export class AuthService {
 
     this.logger.log(`Signing up user: ${email}`);
 
-    const user = this.usersService.findOneByEmailWithoutException(email);
+    const user = await this.usersService.findOneByEmailWithoutException(email);
+
+    this.logger.log(user);
 
     if (user) throw new BadRequestException(`User with ${email} already exist`);
 
     const hashedPassword = await this.hashData(password);
 
-    const newUser = this.usersService.create({
+    const newUser = await this.usersService.create({
       firstName,
       lastName,
       age,
@@ -58,20 +60,20 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    const tokens = await this.getTokens(newUser.id, email);
+    const tokens = await this.getTokens(newUser._id, email);
 
-    await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+    await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
     this.logger.log(`User with email: ${email} successfully signed up`);
 
     return tokens;
   }
 
-  async signOut(userId: number) {
+  async signOut(userId: string) {
     return this.usersService.findOneAndUpdate(userId, { refreshToken: null });
   }
 
-  async getTokens(userId: number, email: string) {
+  async getTokens(userId: string, email: string) {
     this.logger.log(`Generate tokens for user: ${userId}, ${email}`);
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -97,24 +99,29 @@ export class AuthService {
       )
     ])
 
+    await this.usersService.findOneAndUpdate(userId, {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+
     return {
       accessToken,
       refreshToken
     }
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string): Promise<void> {
+  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
     const hashedRefreshToken = await this.hashData(refreshToken);
 
-    this.usersService.findOneAndUpdate(userId, {
+    await this.usersService.findOneAndUpdate(userId, {
       refreshToken: hashedRefreshToken,
     });
   }
 
-  async refreshTokens(userId: number, refreshToken: string) {
+  async refreshTokens(userId: string, refreshToken: string) {
     this.logger.log(`Updating tokens for user: ${userId}`);
 
-    const user = this.usersService.findOneById(userId);
+    const user = await this.usersService.findOneById(userId);
 
     if (!user || !user.refreshToken) throw new ForbiddenException('Access denied');
 
@@ -122,9 +129,9 @@ export class AuthService {
 
     if (!isRefreshTokenValid) throw new ForbiddenException('Access denied: Invalid refresh token');
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user._id, user.email);
 
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    await this.updateRefreshToken(user._id, tokens.refreshToken);
 
     return tokens;
   }
