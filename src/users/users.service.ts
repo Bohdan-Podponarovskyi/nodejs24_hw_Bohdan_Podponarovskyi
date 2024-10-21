@@ -1,18 +1,28 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserInputDto } from './dto/create-user-input.dto';
 import { UserInterface } from './interfaces/user.interface';
 import { UpdateUserInputDto } from './dto/update-user-input.dto';
-
-let users = []
+import { DatabaseAbstractServiceInterface } from '../database-abstract/types/database-abstract-service.interface';
+import { MongooseModelsMapEnum } from '../database-abstract/types/enums/mongodb-model-map.enum';
 
 @Injectable()
 export class UsersService {
-  findAll() {
+  constructor(
+    @Inject('DATABASE_CONNECTION') private databaseService: DatabaseAbstractServiceInterface
+  ) {}
+
+  async findAll(): Promise<UserInterface[]> {
+    const users = await this.databaseService.findAll(MongooseModelsMapEnum.USER);
+
+    if (!users || users.length == 0) {
+      throw new NotFoundException('Users not found!');
+    }
+
     return users;
   }
 
-  findOneById(id: number): UserInterface {
-    const user = users.find((user) => user.id === id);
+  async findOneById(id: string): Promise<UserInterface> {
+    const user = await this.databaseService.findOneById(MongooseModelsMapEnum.USER, id);
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -21,8 +31,8 @@ export class UsersService {
     return user;
   }
 
-  findOneByEmail(email: string): UserInterface {
-    const user = users.find((user) => user.email === email);
+  async findOneByEmail(email: string): Promise<UserInterface | null> {
+    const user = await this.databaseService.findOne(MongooseModelsMapEnum.USER, { email: email });
 
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
@@ -31,43 +41,31 @@ export class UsersService {
     return user;
   }
 
-  findOneByEmailWithoutException(email: string): UserInterface {
-    return users.find((user) => user.email === email);
+  async findOneByEmailWithoutException(email: string): Promise<UserInterface> {
+    return this.databaseService.findOne(MongooseModelsMapEnum.USER, { email: email });
   }
 
-  findOneAndUpdate(id: number, updateUserInputDto: Partial<UpdateUserInputDto>) {
-    const user = this.findOneById(id);
-    return this.update(user.id, updateUserInputDto);
-  }
+  async findOneAndUpdate(id: string, updateUserInputDto: Partial<UpdateUserInputDto>) {
+    const existingUser = await this.databaseService.findByIdAndUpdate(MongooseModelsMapEnum.USER, id, updateUserInputDto);
 
-  create(createUserInputDto: CreateUserInputDto): UserInterface {
-    const newUser = {
-      id: users.length + 1,
-      ...createUserInputDto
-    };
-    users.push(newUser);
-
-    return newUser;
-  }
-
-  update(id: number, updateUserInputDto: Partial<UpdateUserInputDto>): UserInterface {
-    const userIndex = users.findIndex((user) => user.id === id);
-
-    if (userIndex === -1) {
+    if (!existingUser) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    if (updateUserInputDto.hasOwnProperty('id')) {
-      throw new UnprocessableEntityException(`Updating the ID field is not allowed`)
-    }
-
-    const updatedUser = { ...users[userIndex], ...updateUserInputDto };
-    users[userIndex] = updatedUser;
-
-    return updatedUser as UserInterface;
+    return existingUser;
   }
 
-  remove(id: number) {
-    return this.findOneById(id) && users.splice(users.findIndex((user) => user.id === id), 1);
+  async create(createUserInputDto: CreateUserInputDto): Promise<UserInterface> {
+    return this.databaseService.insertOne(MongooseModelsMapEnum.USER, createUserInputDto);
+  }
+
+  async remove(id: string): Promise<UserInterface> {
+    const user = await this.databaseService.findByIdAndDelete(MongooseModelsMapEnum.USER, id);
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 }
